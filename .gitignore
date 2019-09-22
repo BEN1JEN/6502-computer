@@ -1,3 +1,5 @@
 *.gch
 *.*~
 /test
+/comp6502
+/make
