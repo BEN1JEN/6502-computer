@@ -1,8 +1,8 @@
 # Variables
 Gxx = g++
-LIBS = glu
+LIBS = gl
 CPPFLAGS = -Isource -Wall -Wextra $(shell pkg-config --cflags $(LIBS))
-LDFLAGS = $(shell pkg-config --libs $(LIBS)) -pthread -lglut -lpng -lX11
+LDFLAGS = $(shell pkg-config --libs $(LIBS)) -pthread -lpng -lX11
 
 BUILDFOLDER = make
 # Files
