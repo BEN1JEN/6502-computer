@@ -1,5 +1,18 @@
+# Linter files
 *.gch
-*.*~
-/test
-/comp6502
+
+# Editor temp files
+.#*
+
+*~
+*.swp
+/.vscode
+
+# Building files
+*.o
+/test/make
 /make
+
+# Built binaries
+/comp6502
+*.bin
