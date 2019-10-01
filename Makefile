@@ -14,18 +14,26 @@ MODULES = $(patsubst %,make/%,$(SOURCES:.cpp=.o))
 $(TARGET): $(MODULES)
 	$(Gxx) $(MODULES) $(LDFLAGS) -o $(TARGET)
 
-# to run the application
-run: $(TARGET)
-	./$(TARGET) $(ARGS)
-
-all: clean $(TARGET) run
-
 # To obtain object files
 $(BUILDFOLDER)/%.o: %.cpp
 	@echo "if [ ! -d $(BUILDFOLDER) ]; then mkdir $(BUILDFOLDER); fi" | bash
 	@echo "if [ ! -d $(shell dirname $@) ]; then mkdir $(shell dirname $@); fi" | bash
 	$(Gxx) -c $(CPPFLAGS) $< -o $@
 
+# to run the application
+.PHONY: run
+run: $(TARGET) tests
+	./$(TARGET) $(ARGS)
+
+.PHONY: all
+all: clean run
+
+.PHONY: tests
+tests:
+	@echo "6502-computer/tests$ make all"
+	@echo "pushd test && make all; popd" | bash
+
 # To remove generated files
+.PHONY: clean
 clean:
 	rm -rf $(EXEC) $(BUILDFOLDER)

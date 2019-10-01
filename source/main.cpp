@@ -47,7 +47,7 @@ public:
 };
 
 int main() {
-	state = new computer_state("test/HelloWorld.bin");
+	state = new computer_state("test/Dots.bin");
 	cpu = new mos6502(singleton_hacks::memget, singleton_hacks::memset);
 	Emu6502 demo;
 	if (demo.Construct(200, 300, 4, 2)) {
