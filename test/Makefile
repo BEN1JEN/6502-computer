@@ -7,7 +7,8 @@ BUILDFOLDER := make
 ifeq (run,$(firstword $(MAKECMDGOALS)))
 	# use the 2nd arg as the target
 	TARGET := $(firstword $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS)))
-else ifneq (all,$(firstword $(MAKECMDGOALS)))
+else ifeq (all,$(firstword $(MAKECMDGOALS)))
+else ifneq (clean,$(firstword $(MAKECMDGOALS)))
 	# use the first arg as the target
 	TARGET := $(firstword $(MAKECMDGOALS))
 endif
@@ -15,12 +16,12 @@ SOURCES = $(wildcard $(TARGET)/*.asm)
 MODULES = $(patsubst %,$(BUILDFOLDER)/%,$(SOURCES:.asm=.o))
 
 .PHONY: all
-all: $(shell ls *.src)
+all: $(shell echo */)
 	@echo Made Everything
 
 .PHONY: run
 run: $(TARGET)
-	@echo run_$(TARGET)
+	@echo Ran $(TARGET)
 
 .PHONY: clean
 clean:
