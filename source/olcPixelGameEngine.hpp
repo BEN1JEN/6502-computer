@@ -571,6 +571,10 @@ namespace olc // All OneLoneCoder stuff will now exist in the "olc" namespace
 
 namespace olc
 {
+	// BEN1JEN Modification: Hacky time thingy
+	std::chrono::system_clock::time_point a = std::chrono::system_clock::now();
+	std::chrono::system_clock::time_point b = std::chrono::system_clock::now();
+
 	Pixel::Pixel()
 	{
 		r = 0; g = 0; b = 0; a = 255;
@@ -1632,13 +1636,27 @@ namespace olc
 
 		while (bAtomActive)
 		{
-			// Run as fast as possible
+			// Run at 60 FPS
 			while (bAtomActive)
 			{
 				// Handle Timing
 				tp2 = std::chrono::system_clock::now();
 				std::chrono::duration<float> elapsedTime = tp2 - tp1;
 				tp1 = tp2;
+
+				// BEN1JEN Modification: fps limit at 60 fps
+				a = std::chrono::system_clock::now();
+	        std::chrono::duration<double, std::milli> work_time = a - b;
+
+	        if (work_time.count() < 16.667)
+	        {
+	            std::chrono::duration<double, std::milli> delta_ms(16.667 - work_time.count());
+	            auto delta_ms_duration = std::chrono::duration_cast<std::chrono::milliseconds>(delta_ms);
+	            std::this_thread::sleep_for(std::chrono::milliseconds(delta_ms_duration.count()));
+	        }
+
+	        b = std::chrono::system_clock::now();
+	        std::chrono::duration<double, std::milli> sleep_time = b - a;
 
 				// Our time per frame coefficient
 				float fElapsedTime = elapsedTime.count();

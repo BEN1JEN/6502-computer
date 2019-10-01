@@ -42,7 +42,6 @@ public:
 		cpu->Run(cycleAmount, cyclesCompleted);
 		this->cycleOffset = cyclesCompleted-cycleAmount;
 
-		printf("MEM@0000: 0x%2X\n", state->get_memory(0x0000));
 		return true;
 	}
 };
