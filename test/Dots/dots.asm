@@ -1,12 +1,11 @@
-; First two bits are 1, 1, then the device ID then 4 bits that, if one act as a trigger for an event, then the device address
+; First two bits are 1, 1, then the device ID, then 4 bits that if one act as a trigger for an event, then the device address
 drawBufferSwap   = $C0F0
-drawPixelTriger  = $C0F1
+drawPixelTrigger = $C0F1
 drawPaletteLow   = $C000
 drawPaletteHigh  = $C001
 drawAttributes   = $C002 ; high bit is last x1 position, then last x2 position, then 6 colour bits
 drawPositionX1   = $C003
 drawPositionY1   = $C004
-drawPixelTrigger = $C00B
 
 .segment "BSS"
 seed: .res 2
@@ -33,6 +32,9 @@ jsr prng
 and $BF
 sta drawAttributes
 sta drawPixelTrigger
+nop
+nop ; give time for the gpu to render
+sta drawBufferSwap
 jmp mainLoop ; main loop for now
 
 prng:

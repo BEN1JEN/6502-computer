@@ -1,7 +1,9 @@
+#include <iostream>
 #include <fstream>
 
 #define OLC_PGE_APPLICATION
 #include "olcPixelGameEngine.hpp"
+
 #include "mos6502.hpp"
 
 #include "state.hpp"
@@ -18,7 +20,7 @@ namespace singleton_hacks {
 	}
 }
 
-const int cycleLength = 10000000/60;
+const int cycleLength = 100/60; // slowed down to 100000th the speed for testing
 class Emu6502 : public olc::PixelGameEngine {
 private:
 	long long cycleOffset = 0;
@@ -40,6 +42,7 @@ public:
 		int cycleAmount = cycleLength-this->cycleOffset;
 		unsigned long int cyclesCompleted = 0;
 		cpu->Run(cycleAmount, cyclesCompleted);
+//		std::cout << "$" << std::hex << cpu->pc << std::endl;
 		this->cycleOffset = cyclesCompleted-cycleAmount;
 
 		return true;

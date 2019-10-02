@@ -40,7 +40,7 @@
 
 class mos6502
 {
-private:
+public:
 	// registers
 	uint8_t A; // accumulator
 	uint8_t X; // X-index
@@ -55,6 +55,7 @@ private:
 	// status register
 	uint8_t status;
 
+private:
 	typedef void (mos6502::*CodeExec)(uint16_t);
 	typedef uint16_t (mos6502::*AddrExec)();
 

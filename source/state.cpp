@@ -1,6 +1,7 @@
 #include "state.hpp"
 
 #include <fstream>
+#include <iostream>
 
 computer_state::computer_state(const char * filename) {
 	std::ifstream ifile(filename, std::ios::binary);
@@ -22,6 +23,9 @@ uint8_t * computer_state::memory_access(uint16_t addr) {
 
 void computer_state::set_memory(uint16_t addr, uint8_t data) {
 	*this->memory_access(addr) = data;
+	if ((addr & 0xC0F0) == 0xC0F0) {
+		std::cout << "Trigger #" << std::hex << (addr & 0x000F) << " for device " << (addr & 0x3F00) << "@0x" << std::hex << addr << std::endl;
+	}
 }
 uint8_t computer_state::get_memory(uint16_t addr) {
 	return *this->memory_access(addr);
