@@ -1,7 +1,7 @@
 #ifndef GPU_HPP
 #define GPU_HPP
 
-#include "oldPixelGameEngine.hpp"
+#include "olcPixelGameEngine.hpp"
 
 #include "state.hpp"
 
@@ -18,17 +18,13 @@ enum gpu_task_type {
 
 struct gpu_plan {
 	gpu_task_type taskType;
-	uint16_t x1:9;
-	uint8_t y1;
-	uint16_t x2:9;
-	uint8_t y2;
+	uint8_t colour:6;
+	uint8_t x1;
+	uint16_t y1:9;
+	uint8_t x2;
+	uint16_t y2:9;
 	uint8_t x3;
 	uint8_t y3;
-};
-
-struct gpu_task {
-	uint16_t progress;
-	gpu_plan plan;
 };
 
 struct gpu_registers {
@@ -50,7 +46,10 @@ class gpu_device : public generic_device {
 private:
 	colour_t get_pixel(uint16_t, uint16_t);
 
-	gpu_task currentTask;
+	uint8_t current_task;
+	uint8_t last_task;
+	uint16_t current_progress = 0xFFFF;
+	gpu_plan tasks[0x100];
 	gpu_registers reg;
 
 	screen_buffer * back_buffer;
@@ -60,7 +59,8 @@ private:
 public:
 	gpu_device(olc::PixelGameEngine *);
 
-	clock(int);
+	void frame_update();
+	void clock(int);
 
 	void trigger(uint8_t);
 	uint8_t * memory(uint8_t);

@@ -7,8 +7,10 @@
 #include "mos6502.hpp"
 
 #include "state.hpp"
+#include "gpu.hpp"
 
 computer_state * state;
+gpu_device * gpu;
 uint64_t cycles;
 mos6502 * cpu;
 namespace singleton_hacks {
@@ -29,6 +31,7 @@ public:
 		sAppName = "6502 Computer Emulator";
 	}
 	bool OnUserCreate() override {
+		state->add_device(gpu, 0);
 		return true;
 	}
 	bool OnUserUpdate(float delta) override {
@@ -36,7 +39,6 @@ public:
 		int cycleAmount = cycleLength-this->cycleOffset;
 		unsigned long int cyclesCompleted = 0;
 		cpu->Run(cycleAmount, cyclesCompleted);
-//		std::cout << "$" << std::hex << cpu->pc << std::endl;
 		this->cycleOffset = cyclesCompleted-cycleAmount;
 
 		return true;
@@ -47,6 +49,7 @@ int main() {
 	state = new computer_state("test/Dots.bin");
 	cpu = new mos6502(singleton_hacks::memget, singleton_hacks::memset);
 	Emu6502 demo;
+	gpu = new gpu_device(&demo);
 	if (demo.Construct(200, 300, 4, 2)) {
 		demo.Start();
 	}
