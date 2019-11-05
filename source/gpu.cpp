@@ -19,3 +19,7 @@ colour_t computer_state::get_pixel(uint16_t x, uint16_t y) {
 	uint8_t pc = this->display_buffer[(y<<8)|x];
 	return this->display_colours[pc];
 }
+
+void gpu::clock(int times) {
+
+}
