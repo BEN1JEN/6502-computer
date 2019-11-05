@@ -1,9 +1,10 @@
-; First two bits are 1, 1, then the device ID, then 4 bits that if one act as a trigger for an event, then the device address
-drawBufferSwap   = $C0F0
-drawPixelTrigger = $C0F1
+; First two bits are 1, 1, then the 6-bit device ID, then the 8-bit device address
+drawBufferSwap   = $C0FF
 drawPaletteLow   = $C000
 drawPaletteHigh  = $C001
-drawAttributes   = $C002 ; high bit is last x1 position, then last x2 position, then 6 colour bits
+; Attributes: High bit is last x1 position, then last x2 position, then 6
+; colour. Also triggers the drawing operation.
+drawAttributes   = $C002
 drawPositionX1   = $C003
 drawPositionY1   = $C004
 
@@ -31,13 +32,12 @@ sta drawPositionY1
 jsr prng
 and $BF
 sta drawAttributes
-sta drawPixelTrigger
 nop
 nop ; give time for the gpu to render
 sta drawBufferSwap
 jmp mainLoop ; main loop for now
 
-prng:
+prng: ; random generator from NESdev
 	ldy #8     ; iteration count (generates 8 bits)
 	lda seed+0
 :

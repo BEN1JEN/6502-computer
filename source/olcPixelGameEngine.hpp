@@ -1,5 +1,5 @@
 /*
- WARNING: this files content has been modified to better suit the
+ WARNING: this file's content has been modified to better suit the
  needs of this project, and may not be the newest version.
  You can get the latest, and unmodified version from:
  https://github.com/OneLoneCoder/olcPixelGameEngine

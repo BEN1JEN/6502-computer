@@ -33,12 +33,6 @@ public:
 	}
 	bool OnUserUpdate(float delta) override {
 		(void)delta;
-		for (int x = 0; x < ScreenWidth(); x++) {
-			for (int y = 0; y < ScreenHeight(); y++) {
-				colour_t c = state->get_pixel(x&0x11111111, y&0x111111111);
-				Draw(x, y, olc::Pixel(c.r<<3, c.g<<2, c.b<<3));
-			}
-		}
 		int cycleAmount = cycleLength-this->cycleOffset;
 		unsigned long int cyclesCompleted = 0;
 		cpu->Run(cycleAmount, cyclesCompleted);
