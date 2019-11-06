@@ -31,6 +31,8 @@ public:
 		sAppName = "6502 Computer Emulator";
 	}
 	bool OnUserCreate() override {
+		std::cout << "this@" << this << std::endl;
+		gpu = new gpu_device(this);
 		state->add_device(gpu, 0);
 		return true;
 	}
@@ -41,15 +43,17 @@ public:
 		cpu->Run(cycleAmount, cyclesCompleted);
 		this->cycleOffset = cyclesCompleted-cycleAmount;
 
+		state->clock(cycleAmount);
+		gpu->frame_update();
+
 		return true;
 	}
 };
 
 int main() {
+	Emu6502 demo;
 	state = new computer_state("test/Dots.bin");
 	cpu = new mos6502(singleton_hacks::memget, singleton_hacks::memset);
-	Emu6502 demo;
-	gpu = new gpu_device(&demo);
 	if (demo.Construct(200, 300, 4, 2)) {
 		demo.Start();
 	}

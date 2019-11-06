@@ -8,6 +8,14 @@ computer_state::computer_state(const char * filename) {
 	ifile.read((char *)(void *)this->rom, 0x1FFFF);
 }
 
+void computer_state::clock(int times) {
+	for (int i = 0; i < 64; i++) {
+		if (this->devices[i] != NULL) {
+			this->devices[i]->clock(times);
+		}
+	}
+}
+
 uint8_t * computer_state::memory_access(uint16_t addr) {
 	if ((addr & 0xC000) == 0x0000) {
 		return &this->ram[addr];
@@ -30,10 +38,8 @@ uint8_t * computer_state::memory_access(uint16_t addr) {
 }
 
 void computer_state::set_memory(uint16_t addr, uint8_t data) {
-	std::cout << "Set 0x" << std::hex << (int)data << " @ $" << (int)addr << std::endl;
 	*this->memory_access(addr) = data;
 	if ((addr & 0xC000) == 0xC000 && this->devices[(addr&0x3F00) >> 8] != NULL) {
-		std::cerr << "Trigger #" << std::hex << (addr & 0x00FF) << " for device " << ((addr&0x3F00) >> 8) << " @ 0x" << std::hex << addr << std::endl;
 		this->devices[(addr&0x3F00) >> 8]->trigger((uint8_t)(addr & 0xFF));
 	}
 }

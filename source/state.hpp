@@ -22,6 +22,8 @@ private:
 public:
 	computer_state(const char *);
 
+	void clock(int);
+
 	void set_memory(uint16_t, uint8_t);
 	uint8_t get_memory(uint16_t);
 	bool add_device(generic_device *, uint8_t);

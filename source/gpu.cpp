@@ -1,6 +1,6 @@
 #include "gpu.hpp"
 
-gpu_device::gpu_device(olc::PixelGameEngine * screenOutput) {
+gpu_device::gpu_device(olc::PixelGameEngine * screen_output) {
 	this->back_buffer = new screen_buffer();
 	this->front_buffer = new screen_buffer();
 	this->screen_output = screen_output;
@@ -28,7 +28,8 @@ void gpu_device::frame_update() {
 
 void gpu_device::clock(int times) {
 	for (int i = 0; i < times; i++) {
-	
+		if (this->current_task < this->last_task) {
+		}
 	}
 }
 
