@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <cmath>
 
 #define OLC_PGE_APPLICATION
 #include "olcPixelGameEngine.hpp"
@@ -22,7 +23,7 @@ namespace singleton_hacks {
 	}
 }
 
-const int cycleLength = 1000000/60; // running at 10% speed
+const int cycleLength = 5000000/30; // running at 50% speed
 class Emu6502 : public olc::PixelGameEngine {
 private:
 	long long cycleOffset = 0;
@@ -36,7 +37,6 @@ public:
 		return true;
 	}
 	bool OnUserUpdate(float delta) override {
-		(void)delta;
 		int cycleAmount = cycleLength-this->cycleOffset;
 		unsigned long int cyclesCompleted = 0;
 		cpu->Run(cycleAmount, cyclesCompleted);
@@ -44,6 +44,14 @@ public:
 
 		state->clock(cycleAmount);
 		gpu->frame_update();
+
+		std::cout << "FPS: " << floor(1.0/delta) << "/30"
+			<< " A: $" << std::hex << (int)cpu->A
+			<< " X: $" << std::hex << (int)cpu->X
+			<< " Y: $" << std::hex << (int)cpu->Y
+			<< " PC: $" << std::hex << (int)cpu->pc
+			<< " SP: $" << std::hex << (int)cpu->sp
+			<< std::endl;
 
 		return true;
 	}

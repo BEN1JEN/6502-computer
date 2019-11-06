@@ -13,8 +13,10 @@ gpu_device::gpu_device(olc::PixelGameEngine * screen_output) {
 }
 
 colour_t gpu_device::get_pixel(uint16_t x, uint16_t y) {
-	uint8_t pc = this->front_buffer->p[(y<<8)|x];
-	return this->display_colours[pc];
+	uint8_t pixelc = this->front_buffer->p[(y<<8)|x];
+	uint8_t palette = this->reg.palettes >> ((pixelc&0x30) >> 3 ) & 3;
+	uint8_t palc = (pixelc & 0xf) + palette*16;
+	return this->display_colours[palc];
 }
 
 void gpu_device::set_pixel(uint16_t x, uint16_t y, uint8_t c) {

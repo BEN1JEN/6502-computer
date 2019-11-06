@@ -18,29 +18,36 @@ sta seed
 lda #$51
 sta seed+1
 
-; load pallettes 4x16 colours out of 256 colours
-lda #$45
+; load pallettes 4x16 colours out of 256 colours (0, 5, a, f)
+lda #$50
 sta drawPaletteLow
-lda #$67
+lda #$FA
 sta drawPaletteHigh
 
 mainLoop:
-lda #$FF
-tax
-drawLoop:
-jsr prng ; write position
-sta drawPositionX1
-jsr prng
-asl a
-sta drawPositionY1
-jsr prng
-and #$3f
-sta drawAttributes ; render
-inc drawPositionY1 ; make a 1x2 block, pixels are streached 2x1
-sta drawAttributes
-sta drawBufferSwap ; swap buffers
-dex
-bne drawLoop ; loop until x=0
+	lda #$FF
+	tax
+	tay
+	drawLoop:
+		jsr prng ; write position
+		sta drawPositionX1
+		jsr prng
+		asl a
+		sta drawPositionY1
+		jsr prng
+		and #$3f
+		sta drawAttributes ; render
+		inc drawPositionY1 ; make a 1x2 block, pixels are streached 2x1
+		sta drawAttributes
+		dey
+		beq :+; if y = 0
+			lda #$FF
+			tay
+			dex
+		:
+		cpx #00
+	bne drawLoop ; loop until x=0
+	sta drawBufferSwap ; swap buffers
 jmp mainLoop ; main loop for now
 
 prng: ; random generator from NESdev
