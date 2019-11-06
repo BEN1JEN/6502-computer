@@ -32,6 +32,7 @@ void gpu_device::clock(int times) {
 	}
 }
 
+#include <iostream>
 void gpu_device::trigger(uint8_t trigger) {
 	if (trigger == 2) {
 		gpu_plan * plan = &this->tasks[this->last_task++];
@@ -52,4 +53,5 @@ uint8_t * gpu_device::memory(uint8_t addr) {
 	if (addr < 8) {
 		return (uint8_t *)&this->reg + addr;
 	}
+	return 0;
 }

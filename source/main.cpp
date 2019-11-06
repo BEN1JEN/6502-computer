@@ -22,7 +22,7 @@ namespace singleton_hacks {
 	}
 }
 
-const int cycleLength = 100/60; // slowed down to 100000th the speed for testing
+const int cycleLength = 1000/60; // slowed down to 10000th the speed for testing
 class Emu6502 : public olc::PixelGameEngine {
 private:
 	long long cycleOffset = 0;

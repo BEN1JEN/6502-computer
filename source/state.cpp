@@ -12,10 +12,12 @@ uint8_t * computer_state::memory_access(uint16_t addr) {
 	if ((addr & 0xC000) == 0x0000) {
 		return &this->ram[addr];
 	} else if ((addr & 0xC000) == 0xC000 && this->devices[(addr&0x3F00) >> 8] != NULL) {
-		uint8_t * mem = &this->open_bus;
+		uint8_t * mem;
 		if (this->devices[(addr&0x3F00) >> 8] != NULL) {
 			mem = this->devices[(addr&0x3F00) >> 8]->memory((uint8_t)(addr & 0xFF));
-			this->devices[(addr&0x3F00) >> 8]->trigger((uint8_t)(addr & 0xFF));
+		}
+		if (mem == NULL) {
+			mem = &this->open_bus;
 		}
 		return mem;
 	} else if ((addr & 0xC000) != 0xC000) {
@@ -28,9 +30,10 @@ uint8_t * computer_state::memory_access(uint16_t addr) {
 }
 
 void computer_state::set_memory(uint16_t addr, uint8_t data) {
+	std::cout << "Set 0x" << std::hex << (int)data << " @ $" << (int)addr << std::endl;
 	*this->memory_access(addr) = data;
 	if ((addr & 0xC000) == 0xC000 && this->devices[(addr&0x3F00) >> 8] != NULL) {
-		std::cout << "Trigger #" << std::hex << (addr & 0x00FF) << " for device " << ((addr&0x3F00) >> 8) << "@0x" << std::hex << addr << std::endl;
+		std::cerr << "Trigger #" << std::hex << (addr & 0x00FF) << " for device " << ((addr&0x3F00) >> 8) << " @ 0x" << std::hex << addr << std::endl;
 		this->devices[(addr&0x3F00) >> 8]->trigger((uint8_t)(addr & 0xFF));
 	}
 }
