@@ -22,7 +22,7 @@ namespace singleton_hacks {
 	}
 }
 
-const int cycleLength = 1000/60; // slowed down to 10000th the speed for testing
+const int cycleLength = 1000000/60; // running at 10% speed
 class Emu6502 : public olc::PixelGameEngine {
 private:
 	long long cycleOffset = 0;
@@ -31,7 +31,6 @@ public:
 		sAppName = "6502 Computer Emulator";
 	}
 	bool OnUserCreate() override {
-		std::cout << "this@" << this << std::endl;
 		gpu = new gpu_device(this);
 		state->add_device(gpu, 0);
 		return true;

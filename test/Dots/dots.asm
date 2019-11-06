@@ -25,16 +25,22 @@ lda #$67
 sta drawPaletteHigh
 
 mainLoop:
+lda #$FF
+tax
+drawLoop:
 jsr prng ; write position
 sta drawPositionX1
 jsr prng
+asl a
 sta drawPositionY1
 jsr prng
-and $BF
+and #$3f
+sta drawAttributes ; render
+inc drawPositionY1 ; make a 1x2 block, pixels are streached 2x1
 sta drawAttributes
-nop
-nop ; give time for the gpu to render
-sta drawBufferSwap
+sta drawBufferSwap ; swap buffers
+dex
+bne drawLoop ; loop until x=0
 jmp mainLoop ; main loop for now
 
 prng: ; random generator from NESdev

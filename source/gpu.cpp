@@ -17,10 +17,14 @@ colour_t gpu_device::get_pixel(uint16_t x, uint16_t y) {
 	return this->display_colours[pc];
 }
 
+void gpu_device::set_pixel(uint16_t x, uint16_t y, uint8_t c) {
+	this->back_buffer->p[(y<<8)|x] = c;
+}
+
 void gpu_device::frame_update() {
 	for (int x = 0; x < this->screen_output->ScreenWidth(); x++) {
 		for (int y = 0; y < this->screen_output->ScreenHeight(); y++) {
-			colour_t c = this->get_pixel(x&0xff, y&0x1ff);
+			colour_t c = this->get_pixel(x, y);
 			this->screen_output->Draw(x, y, olc::Pixel(c.r<<3, c.g<<2, c.b<<3));
 		}
 	}
@@ -28,16 +32,24 @@ void gpu_device::frame_update() {
 
 void gpu_device::clock(int times) {
 	for (int i = 0; i < times; i++) {
-		if (this->current_task < this->last_task) {
+		if (this->current_task != this->last_task) {
+			gpu_plan task = this->tasks[this->current_task];
+			switch (task.task_type) {
+				case render_point:
+					this->set_pixel((uint16_t)task.x1, task.y1, task.colour);
+					this->current_progress = 0xFFFF;
+					this->current_task++;
+					break;
+			}
 		}
 	}
 }
 
 #include <iostream>
 void gpu_device::trigger(uint8_t trigger) {
-	if (trigger == 2) {
+	if (trigger == 0x02) {
 		gpu_plan * plan = &this->tasks[this->last_task++];
-		plan->taskType = render_line;
+		plan->task_type = render_point;
 		plan->colour = this->reg.attributes & 0x3F;
 		plan->y1 = (this->reg.attributes & 0x80) << 1 | this->reg.positions[0].y;
 		plan->y2 = (this->reg.attributes & 0x40) << 2 | this->reg.positions[1].y;

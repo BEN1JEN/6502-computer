@@ -41,6 +41,7 @@ void computer_state::set_memory(uint16_t addr, uint8_t data) {
 	*this->memory_access(addr) = data;
 	if ((addr & 0xC000) == 0xC000 && this->devices[(addr&0x3F00) >> 8] != NULL) {
 		this->devices[(addr&0x3F00) >> 8]->trigger((uint8_t)(addr & 0xFF));
+		//std::cout << "Trigger #" << (int)(addr&0xFF) << " for dev." << (int)((addr&0x3F00) >> 8) << std::endl;
 	}
 }
 uint8_t computer_state::get_memory(uint16_t addr) {
