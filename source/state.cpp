@@ -3,9 +3,16 @@
 #include <fstream>
 #include <iostream>
 
-computer_state::computer_state(const char * filename) {
+computer_state::computer_state() {}
+
+bool computer_state::load_rom(const char * filename) {
+	std::cout << "Loading rom '" << filename << "'..." << std::endl;
 	std::ifstream ifile(filename, std::ios::binary);
+	if (!ifile.good()) {
+		return false;
+	}
 	ifile.read((char *)(void *)this->rom, 0x1FFFF);
+	return true;
 }
 
 void computer_state::clock(int times) {

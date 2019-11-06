@@ -57,9 +57,20 @@ public:
 	}
 };
 
-int main() {
+int main(int argc, char ** argv) {
 	Emu6502 demo;
-	state = new computer_state("test/Dots.bin");
+	state = new computer_state();
+	const char * rom_path;
+	if (argc > 1) {
+		rom_path = argv[1];
+	} else {
+		rom_path = "test/dots.bin";
+	}
+	if (!state->load_rom(rom_path)) {
+		std::cerr << "Error: Could not open rom image '" << rom_path << "'." << std::endl;
+		return -1;
+	}
+	
 	cpu = new mos6502(singleton_hacks::memget, singleton_hacks::memset);
 	if (demo.Construct(200, 300, 4, 2)) {
 		demo.Start();

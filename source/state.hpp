@@ -20,7 +20,8 @@ private:
 	generic_device * devices[64];
 	uint8_t open_bus;
 public:
-	computer_state(const char *);
+	computer_state();
+	bool load_rom(const char *);
 
 	void clock(int);
 
