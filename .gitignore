@@ -11,8 +11,8 @@
 # Building files
 *.o
 /test/make
-/make
+/simulator/make
 
 # Built binaries
-/comp6502
+/simulator/comp6502
 *.bin
