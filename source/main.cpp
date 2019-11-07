@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <cmath>
+#include <cstdlib>
+#include <cstring>
 
 #define OLC_PGE_APPLICATION
 #include "olcPixelGameEngine.hpp"
@@ -23,7 +25,7 @@ namespace singleton_hacks {
 	}
 }
 
-const int cycleLength = 5000000/30; // running at 50% speed
+int cycleLength = 10000000; // running at 100% speed
 class Emu6502 : public olc::PixelGameEngine {
 private:
 	long long cycleOffset = 0;
@@ -37,7 +39,7 @@ public:
 		return true;
 	}
 	bool OnUserUpdate(float delta) override {
-		int cycleAmount = cycleLength-this->cycleOffset;
+		int cycleAmount = (int)((float)cycleLength*delta)-this->cycleOffset;
 		unsigned long int cyclesCompleted = 0;
 		cpu->Run(cycleAmount, cyclesCompleted);
 		this->cycleOffset = cyclesCompleted-cycleAmount;
@@ -45,7 +47,7 @@ public:
 		state->clock(cycleAmount);
 		gpu->frame_update();
 
-		std::cout << "FPS: " << floor(1.0/delta) << "/30"
+		std::cout << "FPS: " << floor(1.0/delta) << "/60"
 			<< " A: $" << std::hex << (int)cpu->A
 			<< " X: $" << std::hex << (int)cpu->X
 			<< " Y: $" << std::hex << (int)cpu->Y
@@ -60,11 +62,29 @@ public:
 int main(int argc, char ** argv) {
 	Emu6502 demo;
 	state = new computer_state();
-	const char * rom_path;
-	if (argc > 1) {
-		rom_path = argv[1];
-	} else {
-		rom_path = "test/dots.bin";
+	const char * rom_path = "test/dots.bin";
+	char option = 0;
+	for (int i = 1; i < argc; i++) {
+		if (option == 0) {
+			if (strlen(argv[i]) == 2 && argv[i][0] == '-') {
+				option = argv[i][1];
+			} else {
+				rom_path = argv[i];
+			}
+		} else {
+			switch(option) {
+				case 'c':
+					cycleLength = strtol(argv[i], NULL, 0);
+					if (cycleLength == 0) {
+						std::cerr << "Invalid cycle length, must be a valid number above 0.";
+					}
+					break;
+				default:
+					std::cerr << "Invalid command line option: `-" << option << "'." << std::endl;
+					return -1;
+			}
+			option = 0;
+		}
 	}
 	if (!state->load_rom(rom_path)) {
 		std::cerr << "Error: Could not open rom image '" << rom_path << "'." << std::endl;
