@@ -62,7 +62,7 @@ public:
 int main(int argc, char ** argv) {
 	Emu6502 demo;
 	state = new computer_state();
-	const char * rom_path = "test/dots.bin";
+	const char * rom_path = "../roms/os65.bin";
 	char option = 0;
 	for (int i = 1; i < argc; i++) {
 		if (option == 0) {
